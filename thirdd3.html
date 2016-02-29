@@ -1,12 +1,18 @@
-<!DOCTYPE html>
-<html>
+ <!DOCTYPE>
+ <html>
 <head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 <meta charset="utf-8">
 <style>
-
 body {
-  font: 10px sans-serif;
-}
+  background-color:lightgreen;
+  }
+  a{
+    float: right;
+    padding: 20px;
+    font-size: 20;
+  }
 
 .axis path,
 .axis line {
@@ -26,13 +32,102 @@ body {
 </style>
 </head>
 <body>
-  <h1 align=center>StateWiseComparision Literates & illetrates</h1>
-<script src="d3.min.js"></script>
-<script>
+  <a href="test.html">EXIT</a>
+  <a href="secondd3.html">BACK</a>
 
-var margin = {top: 20, right: 20, bottom: 30, left: 40},
-    width = 1200 - margin.left - margin.right,
-    height = 600 - margin.top - margin.bottom;
+  <h1 align=center>StateWiseComparision Literates & illetrates</h1>
+
+     </head>
+     <body>
+       <!-- onload="loadJson();" -->
+<script src="d3.min.js"></script>
+
+
+
+<div class="col-sm-6">
+  		  <div style=" width: 300px;">
+          <table border="1" cellpadding="5" id="jsonTable">
+    		      </table>
+
+</div>
+		  <script type="text/javascript">
+
+      function addAllColumnHeaders(myList) {
+
+      var columnSet = [];
+
+      var headerTr$ = $('<tr/>');
+      for (var i = 0; i < myList.length; i++) {
+          var rowHash = myList[i];
+          for (var key in x) {
+              if ($.inArray(key, columnSet) == -1) {
+                  columnSet.push(key);
+                  headerTr$.append($('<th/>').html(key));
+              }
+          }
+      }
+      $("#jsonTable").append(headerTr$);
+
+      return columnSet;
+  }
+
+  $.getJSON("third.json", function (data) {
+      var hit='';
+      val(data);
+
+      var x=['statename','totalLiterate','totalIlliterate']
+      for (var i = 0; i < data.length; i++) {
+
+        var   row$ = $('<tr/>');
+          for (var colIndex = 0; colIndex < x.length; colIndex++) {
+            if(i==0)
+            {
+              row$.append($('<th/>').html(x[colIndex]));
+
+            }
+            else {
+              var cellValue = data[i][x[colIndex]];
+              if (cellValue == null) { cellValue = ""; }
+              else {
+               row$.append($('<td/>').html(cellValue));
+            // console.log(cellValue);
+             }
+           }
+          }
+          row$.append($('<button/>').html('delete'));
+          $("#jsonTable").append(row$);
+        }
+      $('button').click(function() {
+        hit=($(this).prev().html());
+     $(this).closest('tr').remove();
+    //  $('td:nth-child(2),th:nth-child(2)').hide();
+
+                  //  jsonTable.hide1 .ages { display: none; }
+                  //  table.hide2 .total { display: none; }
+     calls();
+    });
+
+  function calls(){
+    for(i=0;i<data.length;i++){
+    $.each(data[i],function(k,v){
+      if(v==hit){
+        data.splice(i,1);
+      }
+    })
+    }
+  val(data);
+}
+  });
+      </script>
+</div>
+
+<div class="col-sm-6">
+<script type="text/javascript">
+function val(data) {
+
+var margin = {top: 20, right: 20, bottom: 200, left: 50},
+    width =600 - margin.left - margin.right,
+    height = 700 - margin.top - margin.bottom;
 
 var x = d3.scale.ordinal()
     .rangeRoundBands([0, width], .1);
@@ -41,27 +136,27 @@ var y = d3.scale.linear()
     .rangeRound([height, 0]);
 
 var color = d3.scale.ordinal()
-    .range(["lightgrey", "grey"]);
+    .range(["purple", "grey"]);
 
 var xAxis = d3.svg.axis()
     .scale(x)
     .orient("bottom")
-    .tickSize(5)
+    .tickSize(1)
     .tickPadding(0);
 
 var yAxis = d3.svg.axis()
     .scale(y)
     .orient("left")
      .tickFormat(d3.format(".2s"));
-
+d3.select("svg").remove();
 var svg = d3.select("body").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-d3.json("third.json", function(error, data) {
-  if (error) throw error;
+// d3.json("third.json", function(error, data)
+  // if (error) throw error;
 
   color.domain(["totalLiterate","totalIlliterate"]);
 
@@ -69,6 +164,7 @@ d3.json("third.json", function(error, data) {
     var y0 = 0;
     d.ages = color.domain().map(function(name) { return {name: name, y0: y0, y1: y0 += +d[name]}; });
     d.total = d.ages[d.ages.length - 1].y1;
+
   });
 
   data.sort(function(a, b) { return b.total - a.total; });
@@ -127,8 +223,9 @@ d3.json("third.json", function(error, data) {
       .style("text-anchor", "end")
       .text(function(d) { return d; });
 
-});
 
+}
 </script>
+</div>
 </body>
 </html>
